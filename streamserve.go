@@ -67,7 +67,7 @@ func main () {
   }
 
   if portName == "" {
-    portStr = "7777"
+    portStr = ":7777"
   } else {
     _, err := strconv.Atoi(portName)
     if err != nil {
