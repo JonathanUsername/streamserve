@@ -12,6 +12,7 @@ import (
   "path/filepath"
   "strconv"
   "net/http"
+  "regexp"
 )
 
 var portStr string
@@ -68,7 +69,7 @@ func main () {
   portName := flag.Arg(1)
 
   if pathName == "" {
-    fmt.Fprintf(os.Stderr, "No path supplied")
+    fmt.Fprintf(os.Stderr, "No path supplied.")
     return
   } else {
     pathStr = filepath.FromSlash(pathName)
@@ -79,11 +80,18 @@ func main () {
   } else {
     _, err := strconv.Atoi(portName)
     if err != nil {
-      fmt.Fprintf(os.Stderr, "Error parsing port number")
+      fmt.Fprintf(os.Stderr, "Error parsing port number.")
       return
     } else {
       portStr = fmt.Sprintf(":%s", portName)
     }
+  }
+
+  match, _ := regexp.MatchString("^/", endpoint)
+
+  if !match {
+    fmt.Fprintf(os.Stderr, "Endpoint '%s' invalid. Must begin with slash.", endpoint)
+    return
   }
 
   listen()
