@@ -16,6 +16,7 @@ import (
 
 var portStr string
 var pathStr string
+var endpoint string
 
 func check (err error) {
   if err != nil {
@@ -47,15 +48,22 @@ func handleReq (w http.ResponseWriter, r *http.Request) {
 }
 
 func listen () {
-  startMsg := fmt.Sprintf("Serving %s at 0.0.0.0%s", pathStr, portStr)
+  startMsg := fmt.Sprintf("Serving %s at 0.0.0.0%s%s", pathStr, portStr, endpoint)
   fmt.Println(startMsg)
-  http.HandleFunc("/", handleReq)
+  http.HandleFunc(endpoint, handleReq)
   http.ListenAndServe(portStr, nil)
 }
 
 func main () {
+  flag.Usage = func() {
+    fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+    fmt.Fprintf(os.Stderr, " %s [OPTIONS] FILEPATH PORTNUMBER\n\nOptions:\n", os.Args[0])
+    flag.PrintDefaults()
+  }
+  flag.StringVar(&endpoint, "e", "/", "Specify a particular endpoint.")
 
   flag.Parse()
+
   pathName := flag.Arg(0)
   portName := flag.Arg(1)
 
